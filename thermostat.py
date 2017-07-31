@@ -2,10 +2,7 @@ import nest
 import csv
 import time
 import os
-import sys
 from datetime import datetime
-
-
 
 
 client_id = os.environ['nestclientid']
