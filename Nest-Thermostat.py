@@ -4,9 +4,11 @@ import time
 import os
 from datetime import datetime
 
+# client_id = os.environ['nestclientid']
+# client_secret = os.environ['nestclientsecret']
 
-client_id = os.environ['nestclientid']
-client_secret = os.environ['nestclientsecret']
+client_id = '9927c69c-45a6-4279-b5db-aedd4a81c10a'
+client_secret= 'auqzoF6iJCZUjtEwTEsILlqTv'
 
 access_token_cache_file = 'nest.json'
 
@@ -17,7 +19,7 @@ napi = nest.Nest(client_id=client_id, client_secret=client_secret, access_token_
 #     print('Go to ' + napi.authorize_url + ' to authorize, then enter PIN below')
 #     pin = input("PIN: ")
 #     napi.request_token(pin)
-# VH6YKMC8
+
 
 def get_temperature():
     for device in napi.thermostats:
@@ -50,9 +52,9 @@ def get_hvac_state():
 
 
 def get_is_fan_timer_active():
-        for device in napi.thermostats:
-            is_fan_timer_active = device.fan
-            return is_fan_timer_active
+    for device in napi.thermostats:
+        is_fan_timer_active = device.fan
+        return is_fan_timer_active
 
 
 # def get_json_data():
@@ -81,24 +83,16 @@ def get_is_fan_timer_active():
 #         return val
 
 
-def get_data():
-    with open('thermal_model.csv', "a") as csvfile:
-        wr = csv.writer(csvfile, quoting=csv.QUOTE_NONE)
-        # wr.writerow("Temperature".split(','))
-        # wr.writerow(str(get_temperature()).split(','))
-        # wr.writerow(get_temp_scale())
-        while (True):
-            wr.writerow(
-                ["{} {} {} {} {} {} {} {} {} {} {} {} {} {} {}".format("Temperature:", get_temperature(), get_temp_scale(), "||",
-                                                              "Date and Time:", get_date_time(), "||", "Hvac State:",
-                                                              get_hvac_state(), "||", "Target Temperature in F:",
-                                                              get_target_temp(), "||", "Is Fan Timer Active:", get_is_fan_timer_active())])
+def get_thermostat_data():
+    with open('thermostat_data.csv', "a") as csvfile:
+        write_file = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
+        write_file.writerow([" Temperature", "Date and Time", "HVAC State", "Target Temperature", "Is Fan Timer Active"])
 
-            print "Starting to Sleep"
+        while(True):
+            write_file.writerow([str(get_temperature())+get_temp_scale(), get_date_time(), get_hvac_state(), str(get_target_temp())+get_temp_scale(), get_is_fan_timer_active()])
+            print "Writing to the File"
             time.sleep(60)
             print "*" * 20
-            print "TADAAA! AWAKE"
-            print "Writing the data"
 
 
-get_data()
+get_thermostat_data()
